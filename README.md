@@ -11,4 +11,9 @@ setting up my git repository and assignment basics:
     3) git init -> git remote add origin https://github.com/GetosMonkey/PCP1-Repository.git
     4) git pull orgin master
     5) git add . -> git commit -m "some change" -> git push origin master
-    6) use password of laptop for passphrase key for abrmar043 (no 07, no capital)
+    6) use password of laptop for passphrase key for abrmar043 (no 07, no capital) 
+
+## Use of Artificial intelligence: 
+    1) 
+## Resources used: 
+    1) 
