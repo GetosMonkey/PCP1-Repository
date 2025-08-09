@@ -21,5 +21,7 @@ To run the program use: make run -> this runs the program with default values
     1) Learning how to use gitignores so that I don't change the serial solution
     2) Using Claude to help understand the sample code after creating my own summary table of each class
     3) Work around run issues with the project file and file directory structure
+    4) Confirmed that ForkJoinPool violates the assignment’s synchronization restrictions and to troubleshoot manual thread management with join()
 ## Resources used: 
-    1) 
+    1) https://youtu.be/r_MbozD32eo  // Multithreading
+    2) https://youtu.be/tusUoAfYzAI  // Forkjoin
