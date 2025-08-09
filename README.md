@@ -13,11 +13,13 @@ setting up my git repository and assignment basics:
     4) git pull orgin master
     5) git add . -> git commit -m "some change" -> git push origin master
     6) use password of laptop for passphrase key for abrmar043 (no 07, no capital) 
-
+Deleted the .project file because of issues with not using the Eclipse IDE.
+To run the program use: make run -> this runs the program with default values
+                        make ARGS= "30 200 999" -> dungeon size 30, 200 searches, seed 999
 
 ## Use of Artificial intelligence: 
     1) Learning how to use gitignores so that I don't change the serial solution
     2) Using Claude to help understand the sample code after creating my own summary table of each class
-    3) 
+    3) Work around run issues with the project file and file directory structure
 ## Resources used: 
     1) 
