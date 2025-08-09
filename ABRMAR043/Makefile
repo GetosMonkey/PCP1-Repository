@@ -2,7 +2,6 @@
 # 9th August 2025 
 # Parellelized makefile 
 
-
 JAVAC=javac
 JAVA=java
 SRC=ParallelSolution

@@ -1,20 +1,17 @@
+// ABRMAR043
+// Maryam Abrahams
+// Parallelized Hunt Search
+// 9 August 2025
 
-/**
- * Hunt.java
- *
- * Represents a search in the grid of a DungeonMap to identify the local maximum from a start point.
- *
- *
- *M. Kuttel 2025
- */
 
-public class Hunt {
-	private int id;						//  identifier for this hunt
+public class HuntParallel {
+    
+    private int id;						//  identifier for this hunt
 	private int posRow, posCol;		// Position in the dungeonMap
 	private int steps; 				//number of steps to end of the search
 	private boolean stopped;	// Did the search hit a previously searched location?
 
-	private DungeonMap dungeon;
+	private DungeonMapParallel dungeon;
 	public enum Direction {
 	    STAY,
 	    LEFT,
@@ -27,7 +24,7 @@ public class Hunt {
 	    DOWN_RIGHT
 	}
 
-	public Hunt(int id, int pos_row, int pos_col, DungeonMap dungeon) {
+	public HuntParallel(int id, int pos_row, int pos_col, DungeonMapParallel dungeon) {
 		this.id = id;
 		this.posRow = pos_row; //randomly allocated
 		this.posCol = pos_col; //randomly allocated
@@ -49,7 +46,7 @@ public class Hunt {
 			dungeon.setVisited(posRow, posCol, id);
 			steps++;
 			next = dungeon.getNextStepDirection(posRow, posCol);
-			if(DungeonHunter.DEBUG) System.out.println("Shadow "+getID()+" moving  "+next);
+			if(DungeonHunterParallel.DEBUG) System.out.println("Shadow "+getID()+" moving  "+next);
 			switch(next) {
 				case STAY: return power; //found local valley
 				case LEFT:
@@ -93,5 +90,4 @@ public class Hunt {
 	public int getSteps() { return steps;}
 	
 	public boolean isStopped() {return stopped;}
-
 }
