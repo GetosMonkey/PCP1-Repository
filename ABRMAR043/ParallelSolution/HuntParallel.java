@@ -3,14 +3,16 @@
 // Parallelized Hunt Search
 // 9 August 2025
 
+import java.lang.Thread;
 
-public class HuntParallel {
+public class HuntParallel extends Thread{
     
     private int id;						//  identifier for this hunt
 	private int posRow, posCol;		// Position in the dungeonMap
 	private int steps; 				//number of steps to end of the search
 	private boolean stopped;	// Did the search hit a previously searched location?
 
+	
 	private DungeonMapParallel dungeon;
 	public enum Direction {
 	    STAY,
