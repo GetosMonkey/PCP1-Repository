@@ -5,13 +5,14 @@
 
 import java.util.concurrent.ForkJoinPool; 
 import java.util.concurrent.RecursiveAction;
+import java.util.concurrent.RecursiveTask;
 
-public class HuntParallel{
+public class HuntParallel extends RescursiveTask<Integer>{
     
-    private int id;						//  identifier for this hunt
-	private int posRow, posCol;		// Position in the dungeonMap
-	private int steps; 				//number of steps to end of the search
-	private boolean stopped;	// Did the search hit a previously searched location?
+    private int id;						// identifier for this hunt
+	private int posRow, posCol;			// Position in the dungeonMap
+	private int steps; 					// number of steps to end of the search
+	private boolean stopped;			// Did the search hit a previously searched location?
 
 
 	private DungeonMapParallel dungeon;
@@ -35,12 +36,13 @@ public class HuntParallel{
 		this.stopped = false;
 	}
 
+	//____________________________________________________________________________________________________________________________________________________________________________________
+
 	/**
      * Find the local maximum mana from an initial starting point
-     * 
+     * This is where I'll do my main parallization algorithm which is more or less a recurive version of finManaPeak
      * @return the highest power/mana located
      */
-
 
 	public int findManaPeak() {
 		int power=Integer.MIN_VALUE;
@@ -85,6 +87,10 @@ public class HuntParallel{
 		stopped=true;
 		return power;
 	}
+
+	//____________________________________________________________________________________________________________________________________________________________________________________
+
+	public int getLastResult() { return dungeon.getManaLevel(posRow, posCol);}
 
 	public int getID() { return id; }
 
