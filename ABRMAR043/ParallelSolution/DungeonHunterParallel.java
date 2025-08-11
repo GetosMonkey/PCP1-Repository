@@ -97,63 +97,7 @@ public class DungeonHunterParallel {
    		tock(); //end timer
 
 
-		   public static class SearchResult{
-			final int maxMana; 
-			final int finder; 
-
-			public SearchResult(int maxMana, int finder){
-				this.maxMana = maxMana; 
-				this.finder = finder;
-			}
-			}
-
-			static class SearchWorker extends RecursiveTask<SearchResult>{
-
-				public HuntParallel[] searches; 
-				public int start; 
-				public int end; 
-				public static final int Threshold = 10; 
-
-				public SearchWorker (){}
-				public SearchWorker (HuntParallel[] searches, int start, int end) {
-					this.searches = searches; 
-					this.start = start; 
-					this.end = end; 
-				}
-				
-				public SearchResult compute(){//Compute method for enabling my parallelism in the first place
-					
-					//Recursive calls and base case
-					if(end - start <= Threshold){
-						int maxMana = Integer.MIN_VALUE; 
-						int finder = -1; 
-
-						for (int i = start; i <end; i++){
-							int mana = searches[i].compute();
-							if (mana > maxMana){
-								maxMana = mana; 
-								finder = i;
-							}
-						}
-						return new SearchResult(maxMana, finder); 
-					} else {
-						int mid = (start + end) / 2; 
-
-						SearchWorker l = new SearchWorker(searches, start, mid);
-						SearchWorker r = new SearchWorker(searches, mid, end);
-
-						l.fork(); 
-
-						SearchResult rresult = r.compute(); 
-						SearchResult lresult = l.join(); 
-
-						if (lresult.maxMana > rresult.maxMana){
-							return lresult; 
-						} else {
-							return rresult; 
-						}
-					}
-				}
+		  
 
 		//____________________________________________________________________________________________________________________________________________________________________________________
 
@@ -173,4 +117,63 @@ public class DungeonHunterParallel {
 		dungeon.visualisePowerMap("visualiseSearch.png", false);
 		dungeon.visualisePowerMap("visualiseSearchPath.png", true);
     }
+
+	public static class SearchResult{
+		final int maxMana; 
+		final int finder; 
+
+		public SearchResult(int maxMana, int finder){
+			this.maxMana = maxMana; 
+			this.finder = finder;
+		}
+		}
+
+		static class SearchWorker extends RecursiveTask<SearchResult>{
+
+			public HuntParallel[] searches; 
+			public int start; 
+			public int end; 
+			public static final int Threshold = 10; 
+
+			public SearchWorker (){}
+			public SearchWorker (HuntParallel[] searches, int start, int end) {
+				this.searches = searches; 
+				this.start = start; 
+				this.end = end; 
+			}
+			
+			public SearchResult compute(){//Compute method for enabling my parallelism in the first place
+				
+				//Recursive calls and base case
+				if(end - start <= Threshold){
+					int maxMana = Integer.MIN_VALUE; 
+					int finder = -1; 
+
+					for (int i = start; i <end; i++){
+						int mana = searches[i].findManaPeak();
+						if (mana > maxMana){
+							maxMana = mana; 
+							finder = i;
+						}
+					}
+					return new SearchResult(maxMana, finder); 
+				} else {
+					int mid = (start + end) / 2; 
+
+					SearchWorker l = new SearchWorker(searches, start, mid);
+					SearchWorker r = new SearchWorker(searches, mid, end);
+
+					l.fork(); 
+
+					SearchResult rresult = r.compute(); 
+					SearchResult lresult = l.join(); 
+
+					if (lresult.maxMana > rresult.maxMana){
+						return lresult; 
+					} else {
+						return rresult; 
+					}
+				}
+			}
+		}
 }

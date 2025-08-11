@@ -7,7 +7,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.RecursiveTask;
 
-public class HuntParallel extends RescursiveTask<Integer>{
+public class HuntParallel {
     
     private int id;						// identifier for this hunt
 	private int posRow, posCol;			// Position in the dungeonMap
