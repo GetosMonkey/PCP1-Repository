@@ -3,16 +3,17 @@
 // Parallelized Hunt Search
 // 9 August 2025
 
-import java.lang.Thread;
+import java.util.concurrent.ForkJoinPool; 
+import java.util.concurrent.RecursiveAction;
 
-public class HuntParallel extends Thread{
+public class HuntParallel{
     
     private int id;						//  identifier for this hunt
 	private int posRow, posCol;		// Position in the dungeonMap
 	private int steps; 				//number of steps to end of the search
 	private boolean stopped;	// Did the search hit a previously searched location?
 
-	
+
 	private DungeonMapParallel dungeon;
 	public enum Direction {
 	    STAY,
@@ -39,6 +40,8 @@ public class HuntParallel extends Thread{
      * 
      * @return the highest power/mana located
      */
+
+
 	public int findManaPeak() {
 		int power=Integer.MIN_VALUE;
 		Direction next = Direction.STAY;
