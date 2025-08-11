@@ -3,7 +3,10 @@
 // Parallelized Dungeon Hunter
 // 9 August 2025
 
-import java.util.Random; 
+import java.util.Random;
+import java.util.concurrent.ForkJoinPool; 
+import java.util.concurrent.RecursiveAction;
+
 
 public class DungeonHunterParallel {
     
@@ -66,20 +69,33 @@ public class DungeonHunterParallel {
     		searches[i]=new HuntParallel(i+1, rand.nextInt(dungeonRows),
     				rand.nextInt(dungeonColumns),dungeon);
     	
-    	//do all the searches 	
+		//______________________________________________________________________________
+
+    	// do all the searches
+		// Main part to parallize	
+
     	int max =Integer.MIN_VALUE;
-    	int localMax=Integer.MIN_VALUE;
        	int finder =-1;
+
     	tick();  //start timer
-     	for  (int i=0;i<numSearches;i++) {
-    		localMax=searches[i].findManaPeak();
-    		if(localMax>max) {
-    			max=localMax;
-    			finder=i; //keep track of who found it
-    		}
-    		if(DEBUG) System.out.println("Shadow "+searches[i].getID()+" finished at  "+localMax + " in " +searches[i].getSteps());
-    	}
+		
+     	ForkjoinPool pool = new ForkJoinPool(); 
+		SearchWorker find = new SearchWorker(searches, 0, numSearches); 
+		SearchResult result = pool.invoke(find); 
+		pool.shutdown; 
+
+		max = result.maxMana; 
+		finder = result.finder; 
+
+		if(DEBUG){
+			for (int i =0; i < numSearches; i++){
+				System.out.println("Shadow " + searches[i].getID()+ + " finished at " + searches[i].getLastResult() + " in " + searches[i].getSteps()); 
+			}
+		}
+
    		tock(); //end timer
+
+		//______________________________________________________________________________
    		
 		System.out.printf("\t dungeon size: %d,\n", gateSize);
 		System.out.printf("\t rows: %d, columns: %d\n", dungeonRows, dungeonColumns);
