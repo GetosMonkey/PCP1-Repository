@@ -6,6 +6,7 @@
 import java.util.Random;
 import java.util.concurrent.ForkJoinPool; 
 import java.util.concurrent.RecursiveAction;
+import java.util.concurrent.RecursiveTask;
 
 
 public class DungeonHunterParallel {
@@ -69,7 +70,7 @@ public class DungeonHunterParallel {
     		searches[i]=new HuntParallel(i+1, rand.nextInt(dungeonRows),
     				rand.nextInt(dungeonColumns),dungeon);
     	
-		//______________________________________________________________________________
+		//____________________________________________________________________________________________________________________________________________________________________________________
 
     	// do all the searches
 		// Main part to parallize	
@@ -79,24 +80,83 @@ public class DungeonHunterParallel {
 
     	tick();  //start timer
 		
-     	ForkjoinPool pool = new ForkJoinPool(); 
+     	ForkJoinPool pool = new ForkJoinPool(); 
 		SearchWorker find = new SearchWorker(searches, 0, numSearches); 
 		SearchResult result = pool.invoke(find); 
-		pool.shutdown; 
+		pool.shutdown(); 
 
 		max = result.maxMana; 
 		finder = result.finder; 
 
 		if(DEBUG){
 			for (int i =0; i < numSearches; i++){
-				System.out.println("Shadow " + searches[i].getID()+ + " finished at " + searches[i].getLastResult() + " in " + searches[i].getSteps()); 
+				System.out.println("Shadow " + searches[i].getID()+ " finished at " + searches[i].getLastResult() + " in " + searches[i].getSteps()); 
 			}
 		}
 
    		tock(); //end timer
 
-		//______________________________________________________________________________
-   		
+
+		   public static class SearchResult{
+			final int maxMana; 
+			final int finder; 
+
+			public SearchResult(int maxMana, int finder){
+				this.maxMana = maxMana; 
+				this.finder = finder;
+			}
+			}
+
+			static class SearchWorker extends RecursiveTask<SearchResult>{
+
+				public HuntParallel[] searches; 
+				public int start; 
+				public int end; 
+				public static final int Threshold = 10; 
+
+				public SearchWorker (){}
+				public SearchWorker (HuntParallel[] searches, int start, int end) {
+					this.searches = searches; 
+					this.start = start; 
+					this.end = end; 
+				}
+				
+				public SearchResult compute(){//Compute method for enabling my parallelism in the first place
+					
+					//Recursive calls and base case
+					if(end - start <= Threshold){
+						int maxMana = Integer.MIN_VALUE; 
+						int finder = -1; 
+
+						for (int i = start; i <end; i++){
+							int mana = searches[i].compute();
+							if (mana > maxMana){
+								maxMana = mana; 
+								finder = i;
+							}
+						}
+						return new SearchResult(maxMana, finder); 
+					} else {
+						int mid = (start + end) / 2; 
+
+						SearchWorker l = new SearchWorker(searches, start, mid);
+						SearchWorker r = new SearchWorker(searches, mid, end);
+
+						l.fork(); 
+
+						SearchResult rresult = r.compute(); 
+						SearchResult lresult = l.join(); 
+
+						if (lresult.maxMana > rresult.maxMana){
+							return lresult; 
+						} else {
+							return rresult; 
+						}
+					}
+				}
+
+		//____________________________________________________________________________________________________________________________________________________________________________________
+
 		System.out.printf("\t dungeon size: %d,\n", gateSize);
 		System.out.printf("\t rows: %d, columns: %d\n", dungeonRows, dungeonColumns);
 		System.out.printf("\t x: [%f, %f], y: [%f, %f]\n", xmin, xmax, ymin, ymax );
