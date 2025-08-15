@@ -73,7 +73,8 @@ public class HuntParallel extends RecursiveAction {
 			r.compute(); 		// compute right
 			l.join(); 			// wait for left to complete
 		}
-	
+	}
+
 	//________________________________________________________
 	/**
      * Find the local maximum mana from an initial starting point
@@ -111,14 +112,14 @@ public class HuntParallel extends RecursiveAction {
 				case UP_RIGHT:
 					posCol=posCol-1;
 					posRow=posRow+1;
-					case DOWN_LEFT:
-						posRow=posRow+1;
-						posRow--;
-						break;
-					case DOWN_RIGHT:
-						posCol=posCol+1;
-						posRow=posRow+1;
-						break;
+					break;
+				case DOWN_LEFT:
+					posRow=posRow+1;
+					posRow--;
+					break;
+				case DOWN_RIGHT:
+					posCol=posCol+1;
+					posRow=posRow+1;
 				}
 		}
 		stopped=true;
@@ -136,7 +137,7 @@ public class HuntParallel extends RecursiveAction {
 	public boolean isStopped() {return stopped;}
 
 	//____________
-	public int getLocalMax(){ return localMax}
+	public int getLocalMax(){ return localMax;}
 	//____________
 
 }

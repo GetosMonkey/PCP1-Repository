@@ -77,7 +77,7 @@ class DungeonHunterParallel{
 			pool.invoke(mainTask); 
 			pool.shutdown();
 
-			for (int i = 0; i < numSearches, i++) {
+			for (int i = 0; i < numSearches; i++) {
 				int currentMax = searches[i].getLocalMax(); 
 				if (currentMax > max) { 
 					max = currentMax; 
@@ -85,8 +85,10 @@ class DungeonHunterParallel{
 				}
 			}
 
-			if (DEBUG) System.out.println("Shadow "+searches[i].getID()+" finished at "+currentMax+" in "+searches[i].getSteps());
-        	}
+			if (DEBUG) {
+				System.out.println("Shadow " + searches[finder].getID() +
+					" finished at " + max + " in " + searches[finder].getSteps());
+			}			
 
 			tock(); //end timer
 			
@@ -108,3 +110,4 @@ class DungeonHunterParallel{
 			dungeon.visualisePowerMap("visualiseSearch.png", false);
 			dungeon.visualisePowerMap("visualiseSearchPath.png", true);
 		}
+	}
