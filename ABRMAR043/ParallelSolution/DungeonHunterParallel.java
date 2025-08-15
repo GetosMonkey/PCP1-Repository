@@ -4,6 +4,7 @@ import java.util.concurrent.ForkJoinPool;
 
 class DungeonHunterParallel{
 
+		static final boolean DEBUG=false;
 		//timers for how long it all takes
 		static long startTime = 0;
 		static long endTime = 0;
@@ -56,6 +57,7 @@ class DungeonHunterParallel{
 			
 			int dungeonRows=dungeon.getRows();
 			int dungeonColumns=dungeon.getColumns();
+
 			 searches= new HuntParallel [numSearches];
 			for (int i=0;i<numSearches;i++)  //intialize searches at random locations in dungeon
 				searches[i]=new HuntParallel(i+1, rand.nextInt(dungeonRows),
@@ -65,15 +67,15 @@ class DungeonHunterParallel{
 			//_______________________________________________________________________________________________________
 
 			int max =Integer.MIN_VALUE;
-			int localMax=Integer.MIN_VALUE;
 			int finder =-1;
 
 			tick();  //start timer
 
-			int threshold = 1000; 
+			int threshold = 100; 
 			ForkJoinPool pool = new ForkJoinPool(); 
-			HuntParallel mainTask = new HuntParallel(0, 0, 0, dungeon, searches, 0, numSearches, threshold); 
+			HuntParallel mainTask = new HuntParallel(searches, 0, numSearches); 
 			pool.invoke(mainTask); 
+			pool.shutdown();
 
 			for (int i = 0; i < numSearches, i++) {
 				int currentMax = searches[i].getLocalMax(); 
@@ -106,4 +108,3 @@ class DungeonHunterParallel{
 			dungeon.visualisePowerMap("visualiseSearch.png", false);
 			dungeon.visualisePowerMap("visualiseSearchPath.png", true);
 		}
-	}
