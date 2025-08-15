@@ -6,13 +6,16 @@ The search implemented in this assignment is a nice example of a Monte Carlo met
 ### 9th August 2025
 
 setting up my git repository and assignment basics: 
-    Process:
+    
+#### Process:
+
     1) Ubuntu -> code, open terminal
     2) cd Assignment - PCP1'
     3) git init -> git remote add origin https://github.com/GetosMonkey/PCP1-Repository.git
     4) git pull orgin master
     5) git add . -> git commit -m "some change" -> git push origin master
     6) use password of laptop for passphrase key for abrmar043 (no 07, no capital) 
+
 Deleted the .project file because of issues with not using the Eclipse IDE.
 To run the program use: make run -> this runs the program with default values
                         make ARGS= "30 200 999" -> dungeon size 30, 200 searches, seed 999
@@ -55,6 +58,9 @@ My first working version of my program I got today, however it seems to be slowe
     map saved to visualiseSearch.png
     map saved to visualiseSearchPath.png
 
+because of this, I believe that I'll have to check the speed-up factor and not necessarily the time taken itself since the speedup is independant of time.
+This would be the best way  to see if my parrallization is working or not. 
+
 ## Use of Artificial intelligence: 
     1) Learning how to use gitignores so that I don't change the serial solution
     2) Using Claude to help understand the sample code after creating my own summary table of each class
@@ -63,6 +69,7 @@ My first working version of my program I got today, however it seems to be slowe
     5) Helped me with the understanding of the approach : creating an inner Seacrh worker class instead of extending Recucrsiveaction within the Hunt class (which implements the search abilities) in the first place.
     6) Help with understanding the implementation of my paralellism and the structure of the inner classes
     7) Debugging
+    8) Wrong winner selection in recursion fix, performance issues, threshold limitations
 
 ## Resources used: 
     1) https://youtu.be/r_MbozD32eo  // Multithreading
