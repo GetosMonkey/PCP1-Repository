@@ -15,10 +15,8 @@ public class HuntParallel extends RecursiveAction {
 	private int endSearch; 
 	private int threshold; 
 	private int localMax; 
-	private HuntParallel l; 
-	private HuntParallel r; 
+	private HuntParallel[] searches; 
 	//______________
-
 	
 	public enum Direction {
 	    STAY,
@@ -41,7 +39,7 @@ public class HuntParallel extends RecursiveAction {
 	}
 
 	//_____________
-	public HuntParallel(int id, int posRow, int posCol, DungeonMap dungeon, int startSearch, int endSearch, int threshold){
+	public HuntParallel(int id, int posRow, int posCol, DungeonMapParallel dungeon, int startSearch, int endSearch, int threshold){
 		this.id = id;
 		this.posRow = pos_row;
 		this.posCol = pos_col; 
@@ -57,21 +55,26 @@ public class HuntParallel extends RecursiveAction {
 	
 	public void compute(){	
 
+		if(searches == null){
+			findManaPeak(); 
+			return;
+		}
+
 		if (endSearch - startSearch <= threshold){
+			// Base case
 			for (int i = startSearch; i < endSearch; i++){
-				findManaPeak(); 
+				searches[i].findManaPeak(); 
 			}	
 		} else {
 			int mid = (startSearch + endSearch)/2;
 			
-			l = new HuntParallel(id, posRow, posCol, dungeon, startSearch, mid, threshold); 
-			r = new HuntParallel(id, posRow, posCol, dungeon, startSearch, mid, threshold); 
+			HuntParallel l = new HuntParallel(id, posRow, posCol, dungeon, startSearch, mid, threshold); 
+			HuntParallel r = new HuntParallel(id, posRow, posCol, dungeon, startSearch, mid, threshold); 
 			l.fork(); 			// left in parallel
 			r.compute(); 		// compute right
 			l.join(); 			// wait for left to complete
 		}
-		
-	}
+	
 	//________________________________________________________
 	/**
      * Find the local maximum mana from an initial starting point
