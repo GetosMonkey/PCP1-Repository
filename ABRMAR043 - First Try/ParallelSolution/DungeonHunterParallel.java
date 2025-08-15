@@ -133,7 +133,7 @@ public class DungeonHunterParallel {
 			public HuntParallel[] searches; 
 			public int start; 
 			public int end; 
-			public static final int Threshold = 10; 
+			public static final int Threshold = 50; 
 
 			public SearchWorker (){}
 			public SearchWorker (HuntParallel[] searches, int start, int end) {
@@ -168,7 +168,8 @@ public class DungeonHunterParallel {
 					SearchResult rresult = r.compute(); 
 					SearchResult lresult = l.join(); 
 
-					if (lresult.maxMana > rresult.maxMana){
+					if (lresult.maxMana > rresult.maxMana || (lresult.maxMana == rresult.maxMana && lresult.finder < rresult.finder))
+					{
 						return lresult; 
 					} else {
 						return rresult; 
