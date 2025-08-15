@@ -12,10 +12,12 @@ public class HuntParallel extends RecursiveAction {
 	//______________
 
 	private int startSearch; 
-	private int endSearch; 
-	private int threshold; 
-	private int localMax; 
+	private int endSearch;  
+	private int localMax = Integer.MIN_VALUE; 
 	private HuntParallel[] searches; 
+
+	private static final int THRESHOLD = 100;
+
 	//______________
 	
 	public enum Direction {
@@ -39,37 +41,34 @@ public class HuntParallel extends RecursiveAction {
 	}
 
 	//_____________
-	public HuntParallel(int id, int posRow, int posCol, DungeonMapParallel dungeon, int startSearch, int endSearch, int threshold){
-		this.id = id;
-		this.posRow = pos_row;
-		this.posCol = pos_col; 
-		this.dungeon = dungeon;
-		this.startSearch = startSearch; 
-		this.endSearch = endSearch; 
-		this.threshold = threshold; 
+	public HuntParallel( HuntParallel[] searches, int startSearch, int endSearch){
+		this.searches = searches;
+        this.startSearch = startSearch;
+        this.endSearch = endSearch;
 	}
 	//hello world 
 	//_____________
 
 	//________________________________________________________
 	
-	public void compute(){	
+	@Override
+	protected void compute(){	
 
 		if(searches == null){
-			findManaPeak(); 
+			this.localMax = findManaPeak(); 
 			return;
 		}
 
-		if (endSearch - startSearch <= threshold){
+		if (endSearch - startSearch <= THRESHOLD){
 			// Base case
 			for (int i = startSearch; i < endSearch; i++){
-				searches[i].findManaPeak(); 
+				searches[i].localMax = searches[i].findManaPeak(); 
 			}	
 		} else {
 			int mid = (startSearch + endSearch)/2;
 			
-			HuntParallel l = new HuntParallel(id, posRow, posCol, dungeon, startSearch, mid, threshold); 
-			HuntParallel r = new HuntParallel(id, posRow, posCol, dungeon, startSearch, mid, threshold); 
+			HuntParallel l = new HuntParallel(searches, startSearch, mid); 
+			HuntParallel r = new HuntParallel(searches, mid, endSearch); 
 			l.fork(); 			// left in parallel
 			r.compute(); 		// compute right
 			l.join(); 			// wait for left to complete
