@@ -1,20 +1,25 @@
 
-/**
- * Hunt.java
- *
- * Represents a search in the grid of a DungeonMap to identify the local maximum from a start point.
- *
- *
- *M. Kuttel 2025
- */
+import java.util.concurrent.RecursiveAction;
 
-public class Hunt {
+public class HuntParallel extends RecursiveAction {
+
 	private int id;						//  identifier for this hunt
 	private int posRow, posCol;		// Position in the dungeonMap
 	private int steps; 				//number of steps to end of the search
 	private boolean stopped;	// Did the search hit a previously searched location?
+	private DungeonMapParallel dungeon;
 
-	private DungeonMap dungeon;
+	//______________
+
+	private int startSearch; 
+	private int endSearch; 
+	private int threshold; 
+	private int localMax; 
+	private HuntParallel l; 
+	private HuntParallel r; 
+	//______________
+
+	
 	public enum Direction {
 	    STAY,
 	    LEFT,
@@ -27,7 +32,7 @@ public class Hunt {
 	    DOWN_RIGHT
 	}
 
-	public Hunt(int id, int pos_row, int pos_col, DungeonMap dungeon) {
+	public HuntParallel(int id, int pos_row, int pos_col, DungeonMapParallel dungeon) {
 		this.id = id;
 		this.posRow = pos_row; //randomly allocated
 		this.posCol = pos_col; //randomly allocated
@@ -35,6 +40,39 @@ public class Hunt {
 		this.stopped = false;
 	}
 
+	//_____________
+	public HuntParallel(int id, int posRow, int posCol, DungeonMap dungeon, int startSearch, int endSearch, int threshold){
+		this.id = id;
+		this.posRow = pos_row;
+		this.posCol = pos_col; 
+		this.dungeon = dungeon;
+		this.startSearch = startSearch; 
+		this.endSearch = endSearch; 
+		this.threshold = threshold; 
+	}
+	//hello world 
+	//_____________
+
+	//________________________________________________________
+	
+	public void compute(){	
+
+		if (endSearch - startSearch <= threshold){
+			for (int i = startSearch; i < endSearch; i++){
+				findManaPeak(); 
+			}	
+		} else {
+			int mid = (startSearch + endSearch)/2;
+			
+			l = new HuntParallel(id, posRow, posCol, dungeon, startSearch, mid, threshold); 
+			r = new HuntParallel(id, posRow, posCol, dungeon, startSearch, mid, threshold); 
+			l.fork(); 			// left in parallel
+			r.compute(); 		// compute right
+			l.join(); 			// wait for left to complete
+		}
+		
+	}
+	//________________________________________________________
 	/**
      * Find the local maximum mana from an initial starting point
      * 
@@ -49,7 +87,7 @@ public class Hunt {
 			dungeon.setVisited(posRow, posCol, id);
 			steps++;
 			next = dungeon.getNextStepDirection(posRow, posCol);
-			if(DungeonHunter.DEBUG) System.out.println("Shadow "+getID()+" moving  "+next);
+			if(DungeonHunterParallel.DEBUG) System.out.println("Shadow "+getID()+" moving  "+next);
 			switch(next) {
 				case STAY: return power; //found local valley
 				case LEFT:
@@ -78,6 +116,7 @@ public class Hunt {
 					case DOWN_RIGHT:
 						posCol=posCol+1;
 						posRow=posRow+1;
+						break;
 				}
 		}
 		stopped=true;
@@ -94,4 +133,10 @@ public class Hunt {
 	
 	public boolean isStopped() {return stopped;}
 
+	//____________
+	public int getLocalMax(){ return localMax}
+	//____________
+
 }
+
+
