@@ -110,11 +110,11 @@ public class HuntParallel extends RecursiveAction {
 					posRow--;
 					break;
 				case UP_RIGHT:
-					posCol=posCol-1;
+					posCol=posCol-1;				// changed this logic flaw
 					posRow=posRow+1;
 					break;
 				case DOWN_LEFT:
-					posRow=posRow+1;
+					posCol=posCol+1;
 					posRow--;
 					break;
 				case DOWN_RIGHT:

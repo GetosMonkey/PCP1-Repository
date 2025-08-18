@@ -57,11 +57,26 @@ class DungeonHunterParallel{
 			
 			int dungeonRows=dungeon.getRows();
 			int dungeonColumns=dungeon.getColumns();
+			//_______________________________________________________________________________________________________
 
-			 searches= new HuntParallel [numSearches];
-			for (int i=0;i<numSearches;i++)  //intialize searches at random locations in dungeon
-				searches[i]=new HuntParallel(i+1, rand.nextInt(dungeonRows),
+
+			searches= new HuntParallel [numSearches];
+
+			for (int i=0;i<numSearches;i++){ //intialize searches at random locations in dungeon
+				
+				/* 
+				 * searches[i]=new HuntParallel(i+1, rand.nextInt(dungeonRows),
 						rand.nextInt(dungeonColumns),dungeon);
+				*/
+				//____________
+					Random localRand = new Random(i + randomSeed);
+						searches[i] = new HuntParallel(i+1,
+							localRand.nextInt(dungeonRows),
+							localRand.nextInt(dungeonColumns),
+							dungeon);
+
+				//____________
+					}
 			
 			//do all the searches 
 			//_______________________________________________________________________________________________________
