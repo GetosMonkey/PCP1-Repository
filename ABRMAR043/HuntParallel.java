@@ -1,7 +1,8 @@
 
 import java.util.concurrent.RecursiveAction;
+import java.util.concurrent.RecursiveTask;
 
-public class HuntParallel extends RecursiveAction {
+public class HuntParallel extends RecursiveAction{
 
 	private int id;						//  identifier for this hunt
 	private int posRow, posCol;		// Position in the dungeonMap
@@ -69,9 +70,9 @@ public class HuntParallel extends RecursiveAction {
 			
 			HuntParallel l = new HuntParallel(searches, startSearch, mid); 
 			HuntParallel r = new HuntParallel(searches, mid, endSearch); 
-			l.fork(); 			// left in parallel
+			l.compute(); 		// left in parallel
 			r.compute(); 		// compute right
-			l.join(); 			// wait for left to complete
+								// wait for left to complete
 		}
 	}
 
