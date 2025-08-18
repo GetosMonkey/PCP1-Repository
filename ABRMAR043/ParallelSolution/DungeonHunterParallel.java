@@ -61,22 +61,18 @@ class DungeonHunterParallel{
 
 
 			searches= new HuntParallel [numSearches];
+			Random[] randoms = new Random[numSearches]; 
 
 			for (int i=0;i<numSearches;i++){ //intialize searches at random locations in dungeon
 				
-				/* 
-				 * searches[i]=new HuntParallel(i+1, rand.nextInt(dungeonRows),
-						rand.nextInt(dungeonColumns),dungeon);
-				*/
-				//____________
-					Random localRand = new Random(i + randomSeed);
-						searches[i] = new HuntParallel(i+1,
-							localRand.nextInt(dungeonRows),
-							localRand.nextInt(dungeonColumns),
-							dungeon);
-
-				//____________
-					}
+				randoms[i] = new Random(randomSeed + i);
+				searches[i] = new HuntParallel(
+												i+1, 
+												randoms[i].nextInt(dungeonRows), 
+												randoms[i].nextInt(dungeonColumns), 
+												dungeon
+												);
+			}
 			
 			//do all the searches 
 			//_______________________________________________________________________________________________________
@@ -88,22 +84,24 @@ class DungeonHunterParallel{
 
 			int threshold = 100; 
 			ForkJoinPool pool = new ForkJoinPool(); 
+
 			HuntParallel mainTask = new HuntParallel(searches, 0, numSearches); 
 			pool.invoke(mainTask); 
 			pool.shutdown();
 
 			for (int i = 0; i < numSearches; i++) {
-				int currentMax = searches[i].getLocalMax(); 
-				if (currentMax > max) { 
-					max = currentMax; 
+				
+				if(searches[i].getLocalMax() > max){
+					max = searches[i].getLocalMax();
 					finder = i;
 				}
-			}
 
-			if (DEBUG) {
+				if (DEBUG) {
 				System.out.println("Shadow " + searches[finder].getID() +
-					" finished at " + max + " in " + searches[finder].getSteps());
-			}			
+					" finished at " + max + " in " + searches[i].getSteps());
+				}	
+			}
+		
 
 			tock(); //end timer
 			
@@ -124,5 +122,19 @@ class DungeonHunterParallel{
 			System.out.printf("x=%.1f y=%.1f\n\n",dungeon.getXcoord(searches[finder].getPosRow()), dungeon.getYcoord(searches[finder].getPosCol()) );
 			dungeon.visualisePowerMap("visualiseSearch.png", false);
 			dungeon.visualisePowerMap("visualiseSearchPath.png", true);
+		}
+
+		class VisitedPoint {
+		private int x;
+		private int y;
+		private int power;
+		private int hunterId;
+		
+		public VisitedPoint(int x, int y, int power, int hunterId) {
+			this.x = x;
+			this.y = y;
+			this.power = power;
+			this.hunterId = hunterId;
+		}
 		}
 	}

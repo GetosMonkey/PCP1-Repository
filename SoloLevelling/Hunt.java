@@ -1,3 +1,4 @@
+
 /**
  * Hunt.java
  *
@@ -7,7 +8,7 @@
  *M. Kuttel 2025
  */
 
- public class Hunt {
+public class Hunt {
 	private int id;						//  identifier for this hunt
 	private int posRow, posCol;		// Position in the dungeonMap
 	private int steps; 				//number of steps to end of the search
@@ -72,7 +73,7 @@
 					posRow=posRow+1;
 					break;
 				case DOWN_LEFT:
-					posRow=posRow+1;
+					posCol=posCol+1; //fixed BUG!!!
 					posRow--;
 					break;
 				case DOWN_RIGHT:
@@ -95,4 +96,3 @@
 	public boolean isStopped() {return stopped;}
 
 }
-

@@ -1,5 +1,3 @@
-
-
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -8,7 +6,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-public class DungeonMapParallel {
+public class DungeonMapParallel{
 
 	public static final int PRECISION = 10000;
 	public static final int RESOLUTION = 5;
@@ -79,6 +77,7 @@ public class DungeonMapParallel {
 	     */
 	int getManaLevel( int x, int y) {
 		if (visited(x,y)) return manaMap[x][y];  //don't recalculate 
+		if (manaMap[x][y]>Integer.MIN_VALUE) return manaMap[x][y];  //don't recalculate 
 
 		/* Calculate the coordinates of the point in the ranges */
 		double x_coord = xmin + ( (xmax - xmin) / rows ) * x;
@@ -262,4 +261,4 @@ public class DungeonMapParallel {
 	}
 
 
-} 
+}

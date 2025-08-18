@@ -16,7 +16,7 @@ public class HuntParallel extends RecursiveAction {
 	private int localMax = Integer.MIN_VALUE; 
 	private HuntParallel[] searches; 
 
-	private static final int THRESHOLD = 100;
+	private static final int THRESHOLD = 50;
 
 	//______________
 	
@@ -110,11 +110,11 @@ public class HuntParallel extends RecursiveAction {
 					posRow--;
 					break;
 				case UP_RIGHT:
-					posCol=posCol-1;				// changed this logic flaw
+					posCol=posCol-1;
 					posRow=posRow+1;
 					break;
 				case DOWN_LEFT:
-					posCol=posCol+1;
+					posCol=posCol+1; //fixed BUG!!!
 					posRow--;
 					break;
 				case DOWN_RIGHT:
