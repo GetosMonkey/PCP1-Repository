@@ -20,7 +20,7 @@ class DungeonHunterParallel{
 			HuntParallel [] searches;		// Array of searches
 	  
 			Random rand = new Random();  //the random number generator
-			  int randomSeed=0;  //set seed to have predictability for testing
+			int randomSeed=0;  //set seed to have predictability for testing
 			
 			if (args.length!=3) {
 				System.out.println("Incorrect number of command line arguments provided.");
@@ -38,9 +38,11 @@ class DungeonHunterParallel{
 			numSearches = (int) (Double.parseDouble(args[1])*(gateSize*2)*(gateSize*2)*DungeonMapParallel.RESOLUTION);
 			
 			randomSeed=Integer.parseInt( args[2] );
+				
 			if (randomSeed < 0) {
 					throw new IllegalArgumentException("Random seed must be non-negative.");
 				}
+			else if(randomSeed>0)  rand = new Random(randomSeed);  // BUG FIX
 			} catch (NumberFormatException e) {
 				System.err.println("Error: All arguments must be numeric.");
 				System.exit(1);
@@ -61,18 +63,11 @@ class DungeonHunterParallel{
 
 
 			searches= new HuntParallel [numSearches];
-			Random[] randoms = new Random[numSearches]; 
+			//Random[] randoms = new Random[numSearches]; 
 
-			for (int i=0;i<numSearches;i++){ //intialize searches at random locations in dungeon
-				
-				randoms[i] = new Random(randomSeed + i);
-				searches[i] = new HuntParallel(
-												i+1, 
-												randoms[i].nextInt(dungeonRows), 
-												randoms[i].nextInt(dungeonColumns), 
-												dungeon
-												);
-			}
+			for (int i=0;i<numSearches;i++)  //intialize searches at random locations in dungeon
+    		searches[i]=new HuntParallel(i+1, rand.nextInt(dungeonRows),
+    				rand.nextInt(dungeonColumns),dungeon);
 			
 			//do all the searches 
 			//_______________________________________________________________________________________________________
@@ -82,7 +77,7 @@ class DungeonHunterParallel{
 
 			tick();  //start timer
 
-			int threshold = 100; 
+			int threshold = 50; 
 			ForkJoinPool pool = new ForkJoinPool(); 
 
 			HuntParallel mainTask = new HuntParallel(searches, 0, numSearches); 

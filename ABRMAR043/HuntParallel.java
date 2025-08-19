@@ -70,9 +70,9 @@ public class HuntParallel extends RecursiveAction{
 			
 			HuntParallel l = new HuntParallel(searches, startSearch, mid); 
 			HuntParallel r = new HuntParallel(searches, mid, endSearch); 
-			l.compute(); 		// left in parallel
+			l.fork(); 		// left in parallel
 			r.compute(); 		// compute right
-								// wait for left to complete
+			l.join();			// wait for left to complete
 		}
 	}
 
