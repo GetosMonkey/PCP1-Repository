@@ -17,7 +17,7 @@ public class HuntParallel extends RecursiveAction{
 	private int localMax = Integer.MIN_VALUE; 
 	private HuntParallel[] searches; 
 
-	private static final int THRESHOLD = 50;
+	private static final int THRESHOLD = 5000;
 
 	//______________
 	

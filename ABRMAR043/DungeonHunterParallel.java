@@ -77,7 +77,7 @@ class DungeonHunterParallel{
 
 			tick();  //start timer
 
-			int threshold = 50; 
+			int threshold = 5000; 
 			ForkJoinPool pool = new ForkJoinPool(); 
 
 			HuntParallel mainTask = new HuntParallel(searches, 0, numSearches); 
