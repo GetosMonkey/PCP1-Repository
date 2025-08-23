@@ -47,9 +47,9 @@ def load_data(filename):
             validated_image.append(parts[9])
             validated_coords.append(parts[10])
 
-        return size, s_time, p_time, num_searches
+        return size, s_time, p_time, num_searches, density
 
-def plot_data( size, s_time, p_time, num_searches): 
+def plot_data( size, s_time, p_time, num_searches, density): 
     
     # We want to plot speedup graphs: Benchmarking
     # Graph 1 ( x: grid size, y: speedup, where speedup = T1/Tp )
@@ -90,15 +90,27 @@ def plot_data( size, s_time, p_time, num_searches):
     plt.legend()
     plt.grid(True)
     plt.show()
+
+    # Graph 3: Determining optimum density, using color and showing affect of dungeon size
+
+    plt.figure(figsize=(10, 6))
+    sc = plt.scatter(density, speedup, c = size, cmap= 'viridis', s=50)
+    plt.colorbar(sc, label="Dungeon size")
+    plt.xlabel('Density (n)')
+    plt.ylabel('Speedup (ms)')
+    plt.title('Speedup vs Density')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
     
 def main(): 
 
     filename ='/home/abrmar043/Assignment - PCP1/Validation and Efficiency/ComparisonResults.csv'
-    size, s_time, p_time, num_searches = load_data(filename)
+    size, s_time, p_time, num_searches, density = load_data(filename)
 
     # Plotting the data
 
-    plot_data(size, s_time, p_time, num_searches)
+    plot_data(size, s_time, p_time, num_searches, density)
 
 if __name__ == "__main__": 
     main()
