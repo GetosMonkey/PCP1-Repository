@@ -3,7 +3,6 @@
 # 27 March 2025 / 23 August 2025
 # Graphing program 
 
-
 import matplotlib.pyplot as plt
 import subprocess
 import os
@@ -60,14 +59,20 @@ def run_test(directory, args):
         text=True
     )
 
-    # Print output line by line in real time
+    # Printing each line to an output textfile instead 
+    output_text = ""
     for line in process.stdout:
-        print(line, end="")  # already has newline
+        print(line, end="")  # live print
+        output_text += line
 
-    process.wait()  # wait until it finishes
+    process.wait()
 
     if process.returncode != 0:
         raise subprocess.CalledProcessError(process.returncode, process.args)
+
+    # Extract timing and grid points
+    time_ms, points = format_output(output_text)
+    return time_ms, points
 #____________________________________________________________________________________
 
 def clean_test(directory):
@@ -89,6 +94,20 @@ def same_image(pic1_path, pic2_path):
     return not diff.getbbox()
 #____________________________________________________________________________________
 
+def format_output(output_text):
+    """
+    Formatting a text file so its easier to plot my speed up graphs: 
+    format: Test number, DungeonSize, Density, Seed, Serial time (ms), SerialGridPoints, Parallel time (ms) ParallelGridPoints, Image comparison
+    """
+    time_match = re.search(r'time:\s*(\d+)\s*ms', output_text)
+    points_match = re.search(r'number dungeon grid points evaluated:\s*(\d+)', output_text)
+    
+    time_ms = int(time_match.group(1)) if time_match else 0
+    points = int(points_match.group(1)) if points_match else 0
+
+    return time_ms, points
+#____________________________________________________________________________________
+
 def main(): 
 
     image_comparison = []
@@ -99,38 +118,64 @@ def main():
     filename ='/home/abrmar043/Assignment - PCP1/Validation and Efficiency/testValues.csv'
     test_cases = load_data(filename)
 
-    # For each test case run tests and compare images
+    # Saving the run test to a csv file for easy parsing for our plotting program
 
-    num_test = 1 
+    output_file = '/home/abrmar043/Assignment - PCP1/Validation and Efficiency/ComparisonResults.csv'
+    
+    with open(output_file, 'w', newline='') as csvfile: 
+        writer = csv.writer(csvfile)
+        # header
+        writer.writerow(["Test_number", "DungeonSize", "Density", "Seed", "SerialTime_(ms)", "SerialGridPoints", "ParallelTime_(ms)", "ParallelGridPoints", "ImageComparison"])
 
-    for dungeon_size, searches, seed in test_cases:
-
-        print(f"\n=== Running test (size={dungeon_size}, density={searches}, seed={seed}) ===")
+        #____________________________________________________________________________________
+        # For each test case run tests and compare images
         
-        compile_test(serial_dir)
-        compile_test(parallel_dir)
-        run_test(serial_dir, [dungeon_size, searches, seed])
-        run_test(parallel_dir, [dungeon_size, searches, seed])
+        num_test = 1 
 
-        s_path = os.path.join(serial_dir, "visualiseSearchPath.png")
-        p_path = os.path.join(parallel_dir, "visualiseSearchPath.png")
-        identical = same_image(s_path, p_path)
 
-        
-        # Wait a short moment to ensure images are created
-        while not os.path.exists(s_path) or not os.path.exists(p_path):
-            time.sleep(0.1)
+        for dungeon_size, searches, seed in test_cases:
 
-        identical = same_image(s_path, p_path)
+            print(f"\n=== Running test (size={dungeon_size}, density={searches}, seed={seed}) ===")
+            
+            compile_test(serial_dir)
+            compile_test(parallel_dir)
 
-        # Continue
-        print(f"Image comparison: {'PASS' if identical else 'FAIL'}")
-        image_comparison.append(f"Test {num_test}: {'PASSED' if identical else 'FAILED'}")
+            s_time, s_points = run_test(serial_dir, [dungeon_size, searches, seed])
+            p_time, p_points = run_test(parallel_dir, [dungeon_size, searches, seed])
 
-        clean_test(serial_dir)
-        clean_test(parallel_dir)
+            s_path = os.path.join(serial_dir, "visualiseSearchPath.png")
+            p_path = os.path.join(parallel_dir, "visualiseSearchPath.png")
+            identical = same_image(s_path, p_path)
 
-        num_test += 1
+            
+            # Wait a short moment to ensure images are created
+            while not os.path.exists(s_path) or not os.path.exists(p_path):
+                time.sleep(0.1)
+
+            identical = same_image(s_path, p_path)
+
+            # Continue
+            print(f"Image comparison: {'PASS' if identical else 'FAIL'}")
+            image_comparison.append(f"Test {num_test}: {'PASSED' if identical else 'FAILED'}")
+
+            # Writing the results to CSV
+            writer.writerow([
+                num_test,
+                dungeon_size,
+                searches,
+                seed,
+                s_time,
+                s_points,
+                p_time,
+                p_points,
+                'PASS' if identical else 'FAIL'
+            ])
+
+            clean_test(serial_dir)
+            clean_test(parallel_dir)
+
+            num_test += 1
+        #____________________________________________________________________________________
 
 
 if __name__ == "__main__": 
