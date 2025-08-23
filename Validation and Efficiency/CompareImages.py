@@ -1,7 +1,9 @@
 # Using the code framwork of my CSC2001 assignment:
 # Maryam Abrahams
 # 27 March 2025 / 23 August 2025
-# Graphing program 
+# Program for collecting and formatting results - particularly pixel image comparison
+
+# To run: python3 "/home/abrmar043/Assignment - PCP1/Validation and Efficiency/CompareImages.py"
 
 import matplotlib.pyplot as plt
 import subprocess
@@ -70,9 +72,9 @@ def run_test(directory, args):
     if process.returncode != 0:
         raise subprocess.CalledProcessError(process.returncode, process.args)
 
-    # Extract timing and grid points
-    time_ms, points = format_output(output_text)
-    return time_ms, points
+    # Taking timing, gridpoints, number of searches and coordinates alike
+    time_ms, points, num_searches, coords = format_output(output_text)
+    return time_ms, points, num_searches, coords
 #____________________________________________________________________________________
 
 def clean_test(directory):
@@ -97,15 +99,20 @@ def same_image(pic1_path, pic2_path):
 def format_output(output_text):
     """
     Formatting a text file so its easier to plot my speed up graphs: 
-    format: Test number, DungeonSize, Density, Seed, Serial time (ms), SerialGridPoints, Parallel time (ms) ParallelGridPoints, Image comparison
+    format: Test number, DungeonSize, Density, Seed, Serial time (ms), SerialGridPoints, Parallel time (ms) ParallelGridPoints, NumSearches, Image comparison, Coords Match
     """
     time_match = re.search(r'time:\s*(\d+)\s*ms', output_text)
     points_match = re.search(r'number dungeon grid points evaluated:\s*(\d+)', output_text)
-    
+    searches_match = re.search(r'Number searches:\s*(\d+)', output_text)
+    coord_match = re.search(r'Dungeon Master.*x=([\d\.\-]+)\s*y=([\d\.\-]+)', output_text)
+
     time_ms = int(time_match.group(1)) if time_match else 0
     points = int(points_match.group(1)) if points_match else 0
+    num_searches = int(searches_match.group(1)) if searches_match else 0
+    x = float(coord_match.group(1)) if coord_match else None
+    y = float(coord_match.group(2)) if coord_match else None
 
-    return time_ms, points
+    return time_ms, points, num_searches, (x, y)
 #____________________________________________________________________________________
 
 def main(): 
@@ -125,7 +132,7 @@ def main():
     with open(output_file, 'w', newline='') as csvfile: 
         writer = csv.writer(csvfile)
         # header
-        writer.writerow(["Test_number", "DungeonSize", "Density", "Seed", "SerialTime_(ms)", "SerialGridPoints", "ParallelTime_(ms)", "ParallelGridPoints", "ImageComparison"])
+        writer.writerow(["Test_number", "DungeonSize", "Density", "Seed", "SerialTime_(ms)", "SerialGridPoints", "ParallelTime_(ms)", "ParallelGridPoints", "NumSearches", "ImageComparison", "CoordComparison"])
 
         #____________________________________________________________________________________
         # For each test case run tests and compare images
@@ -140,13 +147,12 @@ def main():
             compile_test(serial_dir)
             compile_test(parallel_dir)
 
-            s_time, s_points = run_test(serial_dir, [dungeon_size, searches, seed])
-            p_time, p_points = run_test(parallel_dir, [dungeon_size, searches, seed])
+            s_time, s_points, s_searches, s_coords = run_test(serial_dir, [dungeon_size, searches, seed])
+            p_time, p_points, p_searches, p_coords = run_test(parallel_dir, [dungeon_size, searches, seed])
 
             s_path = os.path.join(serial_dir, "visualiseSearchPath.png")
             p_path = os.path.join(parallel_dir, "visualiseSearchPath.png")
             identical = same_image(s_path, p_path)
-
             
             # Wait a short moment to ensure images are created
             while not os.path.exists(s_path) or not os.path.exists(p_path):
@@ -158,6 +164,9 @@ def main():
             print(f"Image comparison: {'PASS' if identical else 'FAIL'}")
             image_comparison.append(f"Test {num_test}: {'PASSED' if identical else 'FAILED'}")
 
+            # Checking if Coordinates match
+            coord_match = s_coords == p_coords
+
             # Writing the results to CSV
             writer.writerow([
                 num_test,
@@ -168,6 +177,8 @@ def main():
                 s_points,
                 p_time,
                 p_points,
+                s_searches if s_searches == p_searches else 0,
+                'PASS' if coord_match else 'FAIL',
                 'PASS' if identical else 'FAIL'
             ])
 
