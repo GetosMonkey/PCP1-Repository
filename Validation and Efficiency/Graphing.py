@@ -7,6 +7,11 @@
 
 import matplotlib.pyplot as plt
 import numpy as np 
+from scipy.optimize import curve_fit
+
+def decay(x, a, b): 
+    # where x: input, a: asymptotic max, b: growth rate
+    return a * ( 1 - np.exp(-b * x))
 
 def load_data(filename): 
 
@@ -57,11 +62,10 @@ def plot_data( size, s_time, p_time, num_searches):
     plt.scatter(size, speedup, c = 'pink', label = 'Speedup')
     
     # Regression line
-    """plt.plot(size, speedup, color='red', label=f'Fitted line')"""
-    size_sorted = np.array(sorted(size))
-    coeffs = np.polyfit(size, speedup, 2)  # quadratic fit for smooth curve
-    fitted = np.polyval(coeffs, size_sorted)
-    plt.plot(size_sorted, fitted, color='red', label='Quadratic Fit')
+    params, _ = curve_fit(decay, size, speedup, p0=[max(speedup), 0.001])
+    x_smooth = np.linspace(min(size), max(size), 200)
+    y_smooth = decay(x_smooth, *params)
+    plt.plot(x_smooth, y_smooth, color='red', label='Decaying Growth Fit')
 
     plt.xlabel('Dungeon Size (n*n)')
     plt.ylabel('Speedup (ms)')
@@ -75,11 +79,10 @@ def plot_data( size, s_time, p_time, num_searches):
     plt.scatter(num_searches, speedup, c = 'blue', label = 'Speedup')
     
     # Regression line
-    """plt.plot(num_searches, speedup, color='green', label=f'Fitted line')"""
-    searches_sorted = np.array(sorted(num_searches))
-    coeffs2 = np.polyfit(num_searches, speedup, 2)  # quadratic fit
-    fitted2 = np.polyval(coeffs2, searches_sorted)
-    plt.plot(searches_sorted, fitted2, color='green', label='Quadratic Fit')
+    params2, _ = curve_fit(decay, num_searches, speedup, p0=[max(speedup), 0.00001])
+    x_smooth2 = np.linspace(min(num_searches), max(num_searches), 200)
+    y_smooth2 = decay(x_smooth2, *params2)
+    plt.plot(x_smooth2, y_smooth2, color='green', label='Decaying Growth Fit')
     
     plt.xlabel('Number of Searches (n)')
     plt.ylabel('Speedup (ms)')

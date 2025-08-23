@@ -72,6 +72,7 @@ This would be the best way  to see if my parrallization is working or not.
     8) Wrong winner selection in recursion fix, performance issues, threshold limitations
     9) Used Claude to generate test cases for validation csv
     10) I knew how to do basic file reading and plotting in python from Assignment 2 in CSC2001 as well as just CSC1015 in general bt I used AI to figure out all the importing between different folder structures as well as comparing images
+    11) I didn't think that the linear nor the qaudratic fitted lines were suitable regression lines for my data so I used Chatgpt to help optimize my curve since I identified it as more of a decaying growth
 
     NB: most of the syncronization and fork join advice I ended up not using and instead used the lecture slides instead as reference,  apart from how to implement it in the main method because I was confused
 
