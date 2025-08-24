@@ -1,0 +1,45 @@
+My Git Usage log:
+
+* f52fee2 (HEAD -> master, origin/master) last test set
+* 4bde398 updated to have an optimum density graph
+* cb7a8ba Automatic marker marks things automatically
+* a1b5587 updated fit of the curve to fit the exponential decay function instead of a quadratic one since its very clearly not quadratic
+* 4a8480f smaller end image
+* a9fc330 Added graphing functionality and modified test values so that n is higher -> more accurate
+* e98db5f written results to a seperate csv file from the test inputs and succesfully ran tests
+* fccfe82 added validation program files... I hope
+* 6b5f48f changed threshold to 5000 from 50
+* 572cc56 final working cleaned version
+* 1bca88b final version
+* 8884d91 updated directory for automarker
+* 1502bf2 initial bug fix working ish code
+* 761716c changed serial
+* ef91589 final 1
+* 54685e6 final
+* 99eeb7a removed old files
+* 91e2ce5 New working version 1.0
+* f19a31d updated functionality
+* 2713694 Changed parallelization
+* 376a006 changes to hunt parallel class
+* ce823fb renamed
+* b800154 New solution
+* 0c12480 rename files
+* 1d14518 updated readme again
+* 5a425bd working version 1.0
+* f4c9b27 first try
+* 8d6d297 initial paralization
+* dd0fe46 updates to understanding and join methdos
+* 04d308b minor reference changes
+* 7686d2f Testing parallelized file structure
+* b1b5e28 Fixed structure and parallel skeleton implemented
+* a13cfb7 cleaning file structure
+* 9b94ab7 removing the previously compiled class files
+* 2c5be24 redoing setup because of run issue
+* c914da4 Finalise ignoring serial solution
+* 83ceeeb Stop tracking any changes made to the SoloLeveelling folder sin
+ce I want it to remain unchanged
+* 4045af7 Edited base files
+* 5cced7a Adding in base files to repository
+* 833fb51 updates to folder and connection to git hub
+* e0bedd2 Update README.md
+* 2544481 Initial commit
