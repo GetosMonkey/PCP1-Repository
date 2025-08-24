@@ -4,7 +4,7 @@ JAVA=java
 SRC=SoloLevelling
 CLASSES = $(SRC)/DungeonMap.java $(SRC)/Hunt.java $(SRC)/DungeonHunter.java
 # Default arguments (update these if needed)
-ARGS ?= 20 0.2 99 # Replace 'default_arguments' with your specific default arguments, if any: size, searches, seed
+ARGS ?= 10 0.25 99 # Replace 'default_arguments' with your specific default arguments, if any: size, searches, seed
 
 
 all:

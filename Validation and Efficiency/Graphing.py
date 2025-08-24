@@ -68,7 +68,7 @@ def plot_data( size, s_time, p_time, num_searches, density):
     plt.plot(x_smooth, y_smooth, color='red', label='Decaying Growth Fit')
 
     plt.xlabel('Dungeon Size (n*n)')
-    plt.ylabel('Speedup (ms)')
+    plt.ylabel('Speedup (times)')
     plt.title('Speedup vs Dungeon Size')
     plt.legend()
     plt.grid(True)
@@ -84,8 +84,8 @@ def plot_data( size, s_time, p_time, num_searches, density):
     y_smooth2 = decay(x_smooth2, *params2)
     plt.plot(x_smooth2, y_smooth2, color='green', label='Decaying Growth Fit')
     
-    plt.xlabel('Number of Searches (n)')
-    plt.ylabel('Speedup (ms)')
+    plt.xlabel('Number of Searches (Millions 1e6)')
+    plt.ylabel('Speedup (times)')
     plt.title('Speedup vs Number of Searches')
     plt.legend()
     plt.grid(True)
